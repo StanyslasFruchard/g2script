@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      2025-12-18
+// @version      1
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=galactictycoons.com
+// @downloadURL  https://raw.githubusercontent.com/StanyslasFruchard/g2script/refs/heads/master/script.js
+// @updateURL    https://raw.githubusercontent.com/StanyslasFruchard/g2script/refs/heads/master/script.js
 // @grant        none
 // ==/UserScript==
 
