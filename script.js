@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      1
+// @version      1.1
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
@@ -125,7 +125,7 @@
                     appendSpan(outputLine.node, createSpanPerHour(price / craft.time * 60), 'injected-price-hour')
                 } else {
                     appendSpan(outputLine.node, createExtractSpan(), 'injected-price')
-                    appendSpan(outputLine.node, createSpanPerHour(outputLine.price / craft.time * 60), 'injected-price-hour')
+                    appendSpan(outputLine.node, createSpanPerHour(outputLine.price / craft.time * 60 * craft.output.quantity), 'injected-price-hour')
                 }
             });
         }
