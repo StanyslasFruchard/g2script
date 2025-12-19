@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      1.2
+// @version      1.3
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
@@ -87,12 +87,18 @@
     <span class="" style="color: grey; font-size: 12px; display:block;">Extraction</span>
     `
     }
-
+    function createEmptySpan() {
+        return `
+    <span class="" style="color: grey; font-size: 12px; display:block;">-</span>
+    `
+    }
 
     function init() {
         document.querySelectorAll('#typeFilter, #nameFilter').forEach(e => {e.addEventListener('input', refresh)});
         document.querySelectorAll('.nav-link[data-tab="exchange"]').forEach(e => {e.addEventListener('click', refresh)});
         document.querySelector('.navbar-nav a:nth-child(2)').addEventListener('click', refresh)
+        document.querySelector('.form-check.form-switch').addEventListener('click', refresh)
+
         var header = document.querySelectorAll('.container-xxl .row div.col-12.col-md-6 table thead tr')[2]
         if (!document.querySelector('.injected-header') && header) {
             var th = document.createElement('th')
@@ -112,15 +118,34 @@
             document.querySelectorAll('.injected-price, .injected-price-hour').forEach(e => e.remove());
             crafts.forEach(craft => {
                 var outputLine = targetLine(craft.output.name, exchangePrices)
-                if (!outputLine) {return;}
-                if (craft.type != 1) {
-                    let inputPrice = 0
+                if (!outputLine) {
+                    return;
+                } else if (!outputLine.price) {
+                    appendSpan(outputLine.node, createEmptySpan(), 'injected-price')
+                    appendSpan(outputLine.node, createEmptySpan(), 'injected-price-hour')
+                    return;
+                }
+                if (craft.inputs.length > 0) {
+                    var inputPrice = 0
+                    var isPricingValid = true
                     craft.inputs.forEach(input => {
                         var line = targetLine(input.name, exchangePrices);
-                        if (!line) {return;}
+                        if (!line) {
+                            isPricingValid = false
+                            return;
+                        }
                         inputPrice += line.price * input.quantity;
                     })
+                    if (!isPricingValid || !inputPrice || inputPrice === 0) {
+                        appendSpan(outputLine.node, createEmptySpan(), 'injected-price')
+                        appendSpan(outputLine.node, createEmptySpan(), 'injected-price-hour')
+                        return;
+                    }
                     var price = (outputLine.price - (inputPrice / craft.output.quantity))
+
+                    if (craft.type === 1) {
+                        appendSpan(outputLine.node, createExtractSpan(), 'injected-price')
+                    }
                     appendSpan(outputLine.node, createSpan(price), 'injected-price')
                     appendSpan(outputLine.node, createSpanPerHour(price / craft.time * 60 * craft.output.quantity), 'injected-price-hour')
                 } else {
@@ -129,7 +154,13 @@
                 }
             });
         }
+        var emptyExchangePrices = document.querySelectorAll('.container-xxl .row div.col-12.col-md-6 table tbody')[2].querySelectorAll('tr:not(:has(.injected-price)'); 
+        emptyExchangePrices.forEach(emptyExchangePrice => {
+            appendSpan(emptyExchangePrice, createEmptySpan(), 'injected-price')
+            appendSpan(emptyExchangePrice, createEmptySpan(), 'injected-price-hour')  
+        })
     }
+
     function runAfterElementExists(selector,callback){
         var checker = window.setInterval(function() {
             if (document.querySelector(selector)) {
@@ -137,6 +168,7 @@
                 callback();
             }}, 200);
     }
+
     runAfterElementExists('.container-xxl .row div.col-12.col-md-6 table tbody', init)
     function refresh() {setTimeout(init, 10)}
 })();
