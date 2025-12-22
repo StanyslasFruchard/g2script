@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      1.3.4.1
+// @version      1.3.4.2
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
@@ -41,11 +41,11 @@
             return targetTr;
         })
         if (!targetTr) {return;}
-
+        
         return {
             'name' : name,
             'node' : targetTr,
-            'price' : Number(targetTr.querySelector('td:nth-child(3) span').textContent.replace('$', '').replace(/[,.]/, '')) / 100
+            'price' : Number(targetTr.querySelector('td:nth-child(3) span').textContent.replace('$', '').replace('.', '').replace(',', '')) / 100
         }
     };
 
