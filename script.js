@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      1.3.1
+// @version      1.3.2
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
@@ -62,24 +62,24 @@
 
     function createSpan(price) {
         var priceToDsplay = price.toFixed(2).toString().split(".")
-        var colorToDisplay = 'red'
+        var colorToDisplay = 'text-danger'
         if (price > 0) {
-            colorToDisplay = 'green'
+            colorToDisplay = 'text-success'
             priceToDsplay[0] = '+' + priceToDsplay[0]
         }
         return `
-    <span class="" style="color: ${colorToDisplay}; display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small></span>
+    <span class="${colorToDisplay}" style="display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small></span>
     `
     }
     function createSpanPerHour(price) {
         var priceToDsplay = price.toFixed(2).toString().split(".")
-        var colorToDisplay = 'red'
+        var colorToDisplay = 'text-danger'
         if (price > 0) {
-            colorToDisplay = 'green'
+            colorToDisplay = 'text-success'
             priceToDsplay[0] = '+' + priceToDsplay[0]
         }
         return `
-    <span class="" style="color: ${colorToDisplay}; display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small><span class="" style="color:grey;font-size: 12px;">/h</span></span>
+    <span class="${colorToDisplay}" style="display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small><span class="" style="color:grey;font-size: 12px;">/h</span></span>
     `
     }
     function createExtractSpan() {
