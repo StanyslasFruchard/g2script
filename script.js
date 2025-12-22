@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      1.3.4
+// @version      1.3.4.1
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
@@ -45,7 +45,7 @@
         return {
             'name' : name,
             'node' : targetTr,
-            'price' : Number(targetTr.querySelector('td:nth-child(3) span').textContent.replace('$', '').replace(',', ''))
+            'price' : Number(targetTr.querySelector('td:nth-child(3) span').textContent.replace('$', '').replace(/[,.]/, '')) / 100
         }
     };
 
@@ -61,7 +61,7 @@
     }
 
     function createSpan(price, classToDisplay) {
-        var priceToDsplay = price.toFixed(2).toString().split("[,.]")
+        var priceToDsplay = price.toFixed(2).toString().split(/[,.]/)
         if (price > 0) {
             priceToDsplay[0] = '+' + priceToDsplay[0]
         }
@@ -70,7 +70,7 @@
     `
     }
     function createSpanPerHour(price, classToDisplay) {
-        var priceToDsplay = price.toFixed(2).toString().split("[,.]")
+        var priceToDsplay = price.toFixed(2).toString().split(/[,.]/)
         if (price > 0) {
             priceToDsplay[0] = '+' + priceToDsplay[0]
         }
