@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Galactic Tycoons profit tabs
 // @namespace    https://g2.galactictycoons.com/
-// @version      1.3.2
+// @version      1.3.3
 // @description  try to take over the galactic world!
 // @author       Leyla the pro
 // @match        https://g2.galactictycoons.com/*
@@ -60,26 +60,22 @@
         node.appendChild(td)
     }
 
-    function createSpan(price) {
+    function createSpan(price, classToDisplay) {
         var priceToDsplay = price.toFixed(2).toString().split(".")
-        var colorToDisplay = 'text-danger'
         if (price > 0) {
-            colorToDisplay = 'text-success'
             priceToDsplay[0] = '+' + priceToDsplay[0]
         }
         return `
-    <span class="${colorToDisplay}" style="display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small></span>
+    <span class="${classToDisplay}" style="display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small></span>
     `
     }
-    function createSpanPerHour(price) {
+    function createSpanPerHour(price, classToDisplay) {
         var priceToDsplay = price.toFixed(2).toString().split(".")
-        var colorToDisplay = 'text-danger'
         if (price > 0) {
-            colorToDisplay = 'text-success'
             priceToDsplay[0] = '+' + priceToDsplay[0]
         }
         return `
-    <span class="${colorToDisplay}" style="display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small><span class="" style="color:grey;font-size: 12px;">/h</span></span>
+    <span class="${classToDisplay}" style="display:block; white-space: nowrap;">${priceToDsplay[0]}<small>.${priceToDsplay[1]}</small><small class="opacity-50">$</small><span class="" style="color:grey;font-size: 12px;">/h</span></span>
     `
     }
     function createExtractSpan() {
@@ -91,6 +87,24 @@
         return `
     <span class="" style="color: grey; font-size: 12px; display:block;">-</span>
     `
+    }
+
+    function getSpanClass(price, profit, type) {
+        var classToDisplay = 'text-success'
+        if (type === 'flat') {
+            if (profit / price <= 0.10) {
+                classToDisplay = 'text-danger'
+            } else if (0.10 < profit / price <= 0.2) {
+                classToDisplay = 'text-warning'
+            }
+        } else if (type === 'hour') {
+            if (profit <= 100) {
+                classToDisplay = 'text-danger'
+            } else if (100 < profit && profit <= 200) {
+                classToDisplay = 'text-warning'
+            }
+        }
+        return classToDisplay
     }
 
     function init() {
@@ -146,11 +160,13 @@
                     if (craft.type === 1) {
                         appendSpan(outputLine.node, createExtractSpan(), 'injected-price')
                     }
-                    appendSpan(outputLine.node, createSpan(price), 'injected-price')
-                    appendSpan(outputLine.node, createSpanPerHour(price / craft.time * 60 * craft.output.quantity), 'injected-price-hour')
+                    appendSpan(outputLine.node, createSpan(price, getSpanClass(outputLine.price, price, 'flat')), 'injected-price')
+                    var profitPerHour = price / craft.time * 60 * craft.output.quantity
+                    appendSpan(outputLine.node, createSpanPerHour(profitPerHour, getSpanClass(outputLine.price, profitPerHour, 'hour')), 'injected-price-hour')
                 } else {
                     appendSpan(outputLine.node, createExtractSpan(), 'injected-price')
-                    appendSpan(outputLine.node, createSpanPerHour(outputLine.price / craft.time * 60 * craft.output.quantity), 'injected-price-hour')
+                    var profitPerHour = outputLine.price / craft.time * 60 * craft.output.quantity
+                    appendSpan(outputLine.node, createSpanPerHour(profitPerHour, getSpanClass(outputLine.price, profitPerHour, 'hour')), 'injected-price-hour')
                 }
             });
         }
